@@ -14,7 +14,7 @@
  * Author:            Donovan Maidens
  * Author URI:        http://www.anomalous.co.za
  */
-// If this file is called directly, abort.
+
 if (!defined('WPINC')) {
     die;
 }
@@ -22,7 +22,7 @@ if(!class_exists("LoginAnomalousPlugin"))
 {
     /**
      * class:   LoginAnomalousPlugin
-     * desc:    plugin class to allow reports be pulled from multipe GA accounts
+     * desc:    Plugin Class to include the functions in the login.php files.
      */
     class LoginAnomalousPlugin
     {

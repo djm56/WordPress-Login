@@ -1,23 +1,30 @@
 <?php
 
 /**
- * Redirect to the custom login page
+ * 
+ * @link              http://www.anomalous.co.za
+ * @since             1.0.0
+ * @package           wordpress-login
+ * 
+ * All the redirects.
+ * 
  */
+
 function cubiq_login_init() {
     $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
 
-    if (isset($_POST['wp-submit'])) {
+    if (isset(filter_input(INPUT_POST, 'wp-submit'))) {
         $action = 'post-data';
-    } else if (isset($_GET['reauth'])) {
+    } else if (isset(filter_input(INPUT_GET, 'reauth'))) {
         $action = 'reauth';
     }
 
     // redirect to change password form
     if ($action == 'rp' || $action == 'resetpass') {
-        if (isset($_GET['key']) && isset($_GET['login'])) {
-            $rp_path = wp_unslash(home_url('/login/')); //wp_unslash('/login/');
+        if (isset(filter_input(INPUT_GET, 'key')) && isset(filter_input(INPUT_GET, 'login'))) {
+            $rp_path = wp_unslash(home_url('/login/'));
             $rp_cookie = 'wp-resetpass-' . COOKIEHASH;
-            $value = sprintf('%s:%s', wp_unslash($_GET['login']), wp_unslash($_GET['key']));
+            $value = sprintf('%s:%s', wp_unslash(filter_input(INPUT_GET, 'login')), wp_unslash(filter_input(INPUT_GET, 'key')));
             setcookie($rp_cookie, $value, 0, $rp_path, COOKIE_DOMAIN, is_ssl(), true);
         }
 
@@ -26,7 +33,7 @@ function cubiq_login_init() {
     }
 
     // redirect from wrong key when resetting password
-    if ($action == 'lostpassword' && isset($_GET['error']) && ( $_GET['error'] == 'expiredkey' || $_GET['error'] == 'invalidkey' )) {
+    if ($action == 'lostpassword' && isset(filter_input(INPUT_GET, 'error')) && ( filter_input(INPUT_GET, 'error') == 'expiredkey' || filter_input(INPUT_GET, 'error') == 'invalidkey' )) {
         wp_redirect(home_url('/login/?action=forgot&failed=wrongkey'));
         exit;
     }
@@ -81,7 +88,7 @@ add_action('admin_init', 'cubiq_admin_init');
 function cubiq_registration_redirect($errors, $sanitized_user_login, $user_email) {
 
     // don't lose your time with spammers, redirect them to a success page
-    if (!isset($_POST['confirm_email']) || $_POST['confirm_email'] !== '') {
+    if (!isset(filter_input(INPUT_POST, 'confirm_email')) || filter_input(INPUT_POST, 'confirm_email') !== '') {
 
         wp_redirect(home_url('/login/') . '?action=register&success=1');
         exit;
@@ -137,11 +144,11 @@ add_filter('login_redirect', 'cubiq_login_redirect', 10, 3);
 function cubiq_reset_password() {
     $user_data = '';
 
-    if (!empty($_POST['user_login'])) {
-        if (strpos($_POST['user_login'], '@')) {
-            $user_data = get_user_by('email', trim($_POST['user_login']));
+    if (!empty(filter_input(INPUT_POST, 'user_login'))) {
+        if (strpos(filter_input(INPUT_POST, 'user_login'), '@')) {
+            $user_data = get_user_by('email', trim(filter_input(INPUT_POST, 'user_login')));
         } else {
-            $user_data = get_user_by('login', trim($_POST['user_login']));
+            $user_data = get_user_by('login', trim(filter_input(INPUT_POST, 'user_login')));
         }
     }
 
@@ -164,8 +171,8 @@ function cubiq_validate_password_reset($errors, $user) {
     }
 
     // wp-login already checked if the password is valid, so no further check is needed
-    if (!empty($_POST['pass1'])) {
-        reset_password($user, $_POST['pass1']);
+    if (!empty(filter_input(INPUT_POST, 'pass1'))) {
+        reset_password($user, filter_input(INPUT_POST, 'pass1'));
 
         wp_redirect(home_url('/login/?action=resetpass&success=1'));
         exit;
@@ -177,5 +184,3 @@ function cubiq_validate_password_reset($errors, $user) {
 }
 
 add_action('validate_password_reset', 'cubiq_validate_password_reset', 10, 2);
-
-
