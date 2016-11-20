@@ -31,13 +31,7 @@ if(!class_exists("LoginAnomalousPlugin"))
          */
         public function __construct()
         {
-            
-            // CPT for example post type
-            require_once(sprintf("%s/classes/inflect.php", dirname(__FILE__)));
-            require_once(sprintf("%s/includes/custom-post-type.php", dirname(__FILE__)));
-            require_once(sprintf("%s/includes/custom-admin.php", dirname(__FILE__)));
             require_once(sprintf("%s/includes/login.php", dirname(__FILE__)));
-            $customposttype = new customposttype();
         } // END public function __construct()
 
         /**
