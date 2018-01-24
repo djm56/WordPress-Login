@@ -57,7 +57,7 @@ add_action('login_init', 'cubiq_login_init');
  */
 function cubiq_template_redirect() {
     if (is_page('login') && is_user_logged_in()) {
-        wp_redirect(home_url('/advent-kalender/'));
+        wp_redirect(home_url('/user/'));
         exit();
     }
 
